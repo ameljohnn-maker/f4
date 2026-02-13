@@ -8,7 +8,11 @@
 
 <form id="form">
     <input id="name" placeholder="Name"><br>
-    <input id="email" placeholder="email" type="email">
+    <input id="age" placeholder="Age"><br>
+    <input id="gender" placeholder="Gender"><br>
+    <input id="race" placeholder="Race"><br>
+    <input id="class" placeholder="Class"><br> 
+    <input id="faction" placeholder="Faction"><br>
     <button>insert</button>
 </form>
 
@@ -21,7 +25,11 @@ form.onsubmit = async e =>{
      headers: {'Content-Type': 'application/json'},
      body: JSON.stringify({
         name: document.getElementById('name').value,
-        email: document.getElementById('email').value
+        age: document.getElementById('age').value,
+        gender: document.getElementById('gender').value,
+        race: document.getElementById('race').value,
+        class: document.getElementById('class').value,
+        faction: document.getElementById('faction').value
      })
   });
   alert('data inserted successfully');
@@ -59,7 +67,11 @@ fetch('https://f4-production.up.railway.app/users/display')
             <tr id="row-${user.id}">
                 <td>${user.id}</td>
                 <td id="name-${user.id}">${user.name}</td>
-                <td id="email-${user.id}">${user.email}</td>
+                <td id="age-${user.id}">${user.age}</td>
+                 <td id="age-${user.id}">${user.gender}</td>
+                  <td id="age-${user.id}">${user.race}</td>
+                   <td id="age-${user.id}">${user.class}</td>
+                    <td id="age-${user.id}">${user.faction}</td>
                 <td>
                     <button onclick="editUser(${user.id})">Edit</button>
                     <button onclick="saveUser(${user.id})" id="save-${user.id}" hidden>Save</button>
@@ -72,7 +84,11 @@ fetch('https://f4-production.up.railway.app/users/display')
 
 function editUser(id) {
     getEl(`name-${id}`).innerHTML = `<input id="edit-name-${id}" value="${getEl(`name-${id}`).innerText}">`;
-    getEl(`email-${id}`).innerHTML = `<input id="edit-email-${id}" value="${getEl(`email-${id}`).innerText}">`;
+    getEl(`age-${id}`).innerHTML = `<input id="edit-age-${id}" value="${getEl(`age-${id}`).innerText}">`;
+     getEl(`age-${id}`).innerHTML = `<input id="edit-age-${id}" value="${getEl(`gender-${id}`).innerText}">`;
+      getEl(`age-${id}`).innerHTML = `<input id="edit-age-${id}" value="${getEl(`race-${id}`).innerText}">`;
+       getEl(`age-${id}`).innerHTML = `<input id="edit-age-${id}" value="${getEl(`class-${id}`).innerText}">`;
+        getEl(`age-${id}`).innerHTML = `<input id="edit-age-${id}" value="${getEl(`faction-${id}`).innerText}">`;
     
     getEl(`save-${id}`).hidden = false;
     getEl(`cancel-${id}`).hidden = false;
@@ -87,7 +103,11 @@ async function saveUser(id) {
             },
             body: JSON.stringify({
                 name: getEl(`edit-name-${id}`).value,
-                email: getEl(`edit-email-${id}`).value
+                age: getEl(`edit-age-${id}`).value,
+                gender: getEl(`edit-gender-${id}`).value,
+                race: getEl(`edit-race-${id}`).value,
+                class: getEl(`edit-class-${id}`).value,
+                faction: getEl(`edit-faction-${id}`).value
             })
         });
         
@@ -95,7 +115,11 @@ async function saveUser(id) {
         
         const user = await response.json();
         getEl(`name-${id}`).innerHTML = user.name;
-        getEl(`email-${id}`).innerHTML = user.email;
+        getEl(`age-${id}`).innerHTML = user.age;
+        getEl(`gender-${id}`).innerHTML = user.gender;
+        getEl(`race-${id}`).innerHTML = user.race;
+        getEl(`class-${id}`).innerHTML = user.class;
+        getEl(`faction-${id}`).innerHTML = user.faction;
         getEl(`save-${id}`).hidden = true;
         getEl(`cancel-${id}`).hidden = true;
         
@@ -112,7 +136,11 @@ function cancelEdit(id) {
         .then(response => response.json())
         .then(user => {
             getEl(`name-${id}`).innerHTML = user.name;
-            getEl(`email-${id}`).innerHTML = user.email;
+            getEl(`age-${id}`).innerHTML = user.age;
+            getEl(`gender-${id}`).innerHTML = user.gender;
+            getEl(`race-${id}`).innerHTML = user.race;
+            getEl(`class-${id}`).innerHTML = user.class;
+            getEl(`faction-${id}`).innerHTML = user.faction;
             getEl(`save-${id}`).hidden = true;
             getEl(`cancel-${id}`).hidden = true;
         });
@@ -134,9 +162,9 @@ async function deleteUser(id) {
     }
 }
 </script>
-{
+
 </body>
 </html>
-  }
+  
 
 
