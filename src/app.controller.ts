@@ -1,12 +1,17 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import {AppService} from './app.service';
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
 
-@Controller('users')
-export class UsersController {
-constructor(private readonly userservice: AppService){}
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
 
- @Get('db')
-  async checkdatabase(): Promise<string> {
-    return await this.userservice.getHello();
+  @Get('api/hello')
+  getHello(): string {
+    return this.appService.getHello();
+  }
+
+  @Get()
+  serveIndex(): string {
+    return this.appService.getIndexHtml();
   }
 }
