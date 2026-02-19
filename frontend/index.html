@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Game Character System</title>
+  <meta charset="utf-8" />
+  <title>Game Character System</title>
 </head>
 <body>
 
 <h1>INSERT DATA</h1>
 
 <form id="form">
-    <input id="name" placeholder="Name" required><br><br>
-    <input id="age" type="number" placeholder="Age" required><br><br>
+  <input id="name" placeholder="Name" required><br><br>
+  <input id="age" type="number" placeholder="Age" required><br><br>
 
-    <select id="gender" required>
-        <option value="">Select Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-    </select><br><br>
+  <select id="gender" required>
+    <option value="">Select Gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+  </select><br><br>
 
-    <select id="race" required>
-        <option value="">Select Race</option>
-        <option value="Human">Human</option>
-        <option value="Elf">Elf</option>
-        <option value="Orc">Orc</option>
-        <option value="Dwarf">Dwarf</option>
-    </select><br><br>
+  <select id="race" required>
+    <option value="">Select Race</option>
+    <option value="Human">Human</option>
+    <option value="Elf">Elf</option>
+    <option value="Orc">Orc</option>
+    <option value="Dwarf">Dwarf</option>
+  </select><br><br>
 
-    <select id="class" required>
-        <option value="">Select Class</option>
-        <option value="Warrior">Warrior</option>
-        <option value="Mage">Mage</option>
-        <option value="Archer">Archer</option>
-        <option value="Paladin">Paladin</option>
-    </select><br><br>
+  <select id="class" required>
+    <option value="">Select Class</option>
+    <option value="Warrior">Warrior</option>
+    <option value="Mage">Mage</option>
+    <option value="Archer">Archer</option>
+    <option value="Paladin">Paladin</option>
+  </select><br><br>
 
-    <select id="faction" required>
-        <option value="">Select Faction</option>
-        <option value="Alliance">Alliance</option>
-        <option value="Horde">Horde</option>
-        <option value="Neutral">Neutral</option>
-    </select><br><br>
+  <select id="faction" required>
+    <option value="">Select Faction</option>
+    <option value="Alliance">Alliance</option>
+    <option value="Horde">Horde</option>
+    <option value="Neutral">Neutral</option>
+  </select><br><br>
 
-    <button type="submit">Insert</button>
+  <button type="submit">Insert</button>
 </form>
 
 <hr>
@@ -48,198 +49,173 @@
 <h1>DISPLAY / UPDATE / DELETE</h1>
 
 <table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Race</th>
-            <th>Class</th>
-            <th>Faction</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
+  <thead>
+    <tr>
+      <th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Race</th><th>Class</th><th>Faction</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
 </table>
 
 <script>
+  const API_BASE = "https://f4-production.up.railway.app/users";
+  const getEl = id => document.getElementById(id);
 
-const API_BASE = "https://f4-production.up.railway.app/users";
-const getEl = id => document.getElementById(id);
-
-/////////////////////////////////////////////////
-// INSERT
-/////////////////////////////////////////////////
-
-getEl("form").onsubmit = async e => {
+  // INSERT
+  getEl("form").onsubmit = async e => {
     e.preventDefault();
-
-    await fetch(`${API_BASE}`, {
+    try {
+      const res = await fetch(`${API_BASE}/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            name: getEl("name").value,
-            age: getEl("age").value,
-            gender: getEl("gender").value,
-            race: getEl("race").value,
-            class: getEl("class").value,
-            faction: getEl("faction").value
+          name: getEl("name").value,
+          age: getEl("age").value,
+          gender: getEl("gender").value,
+          race: getEl("race").value,
+          class: getEl("class").value,
+          faction: getEl("faction").value
         })
-    });
-
-    alert("Data inserted successfully!");
-    getEl("form").reset();
-    loadUsers();
-};
-
-/////////////////////////////////////////////////
-// DISPLAY
-/////////////////////////////////////////////////
-
-async function loadUsers() {
-    try {
-        const response = await fetch(`${API_BASE}`);
-        
-        if (!response.ok) {
-            console.error("API Error:", response.status);
-            return;
-        }
-        
-        const users = await response.json();
-        console.log("Users loaded:", users);
-        
-        if (!users || users.length === 0) {
-            getEl("tableBody").innerHTML = "<tr><td colspan='8'>No data found</td></tr>";
-            return;
-        }
-
-        getEl("tableBody").innerHTML = users.map(user => `
-            <tr id="row-${user.id}">
-                <td>${user.id}</td>
-                <td id="name-${user.id}">${user.name}</td>
-                <td id="age-${user.id}">${user.age}</td>
-                <td id="gender-${user.id}">${user.gender}</td>
-                <td id="race-${user.id}">${user.race}</td>
-                <td id="class-${user.id}">${user.class}</td>
-                <td id="faction-${user.id}">${user.faction}</td>
-                <td>
-                    <button onclick="editUser(${user.id})">Edit</button>
-                    <button onclick="saveUser(${user.id})" id="save-${user.id}" hidden>Save</button>
-                    <button onclick="cancelEdit(${user.id})" id="cancel-${user.id}" hidden>Cancel</button>
-                    <button onclick="deleteUser(${user.id})" style="color:red;">Delete</button>
-                </td>
-            </tr>
-        `).join("");
-    } catch (error) {
-        console.error("Error loading users:", error);
+      });
+      if (!res.ok) throw new Error("Insert failed: " + res.status);
+      alert("Data inserted successfully!");
+      getEl("form").reset();
+      await loadUsers();
+    } catch (err) {
+      console.error(err);
+      alert("Insert error — check console");
     }
-}
-/////////////////////////////////////////////////
-// EDIT
-/////////////////////////////////////////////////
+  };
 
-function editUser(id) {
+  // DISPLAY
+  async function loadUsers() {
+    try {
+      console.log("GET", `${API_BASE}/display`);
+      const response = await fetch(`${API_BASE}/display`);
+      if (!response.ok) {
+        console.error("API Error:", response.status);
+        getEl("tableBody").innerHTML = "<tr><td colspan='8'>No data found</td></tr>";
+        return;
+      }
+      const users = await response.json();
+      console.log("Users loaded:", users);
+      if (!users || users.length === 0) {
+        getEl("tableBody").innerHTML = "<tr><td colspan='8'>No data found</td></tr>";
+        return;
+      }
+      getEl("tableBody").innerHTML = users.map(user => `
+        <tr id="row-${user.id}">
+          <td>${user.id}</td>
+          <td id="name-${user.id}">${user.name}</td>
+          <td id="age-${user.id}">${user.age}</td>
+          <td id="gender-${user.id}">${user.gender}</td>
+          <td id="race-${user.id}">${user.race}</td>
+          <td id="class-${user.id}">${user.class}</td>
+          <td id="faction-${user.id}">${user.faction}</td>
+          <td>
+            <button onclick="editUser(${user.id})">Edit</button>
+            <button onclick="saveUser(${user.id})" id="save-${user.id}" hidden>Save</button>
+            <button onclick="cancelEdit(${user.id})" id="cancel-${user.id}" hidden>Cancel</button>
+            <button onclick="deleteUser(${user.id})" style="color:red;">Delete</button>
+          </td>
+        </tr>
+      `).join("");
+    } catch (error) {
+      console.error("Error loading users:", error);
+      getEl("tableBody").innerHTML = "<tr><td colspan='8'>Error loading data</td></tr>";
+    }
+  }
 
-    getEl(`name-${id}`).innerHTML =
-        `<input id="edit-name-${id}" value="${getEl(`name-${id}`).innerText}">`;
-
-    getEl(`age-${id}`).innerHTML =
-        `<input type="number" id="edit-age-${id}" value="${getEl(`age-${id}`).innerText}">`;
+  // EDIT
+  function editUser(id) {
+    getEl(`name-${id}`).innerHTML = `<input id="edit-name-${id}" value="${getEl(`name-${id}`).innerText}">`;
+    getEl(`age-${id}`).innerHTML = `<input type="number" id="edit-age-${id}" value="${getEl(`age-${id}`).innerText}">`;
 
     getEl(`gender-${id}`).innerHTML = `
-        <select id="edit-gender-${id}">
-            <option ${getEl(`gender-${id}`).innerText === 'Male' ? 'selected' : ''}>Male</option>
-            <option ${getEl(`gender-${id}`).innerText === 'Female' ? 'selected' : ''}>Female</option>
-        </select>`;
+      <select id="edit-gender-${id}">
+        <option value="Male" ${getEl(`gender-${id}`).innerText === 'Male' ? 'selected' : ''}>Male</option>
+        <option value="Female" ${getEl(`gender-${id}`).innerText === 'Female' ? 'selected' : ''}>Female</option>
+      </select>`;
 
     getEl(`race-${id}`).innerHTML = `
-        <select id="edit-race-${id}">
-            <option ${getEl(`race-${id}`).innerText === 'Human' ? 'selected' : ''}>Human</option>
-            <option ${getEl(`race-${id}`).innerText === 'Elf' ? 'selected' : ''}>Elf</option>
-            <option ${getEl(`race-${id}`).innerText === 'Orc' ? 'selected' : ''}>Orc</option>
-            <option ${getEl(`race-${id}`).innerText === 'Dwarf' ? 'selected' : ''}>Dwarf</option>
-        </select>`;
+      <select id="edit-race-${id}">
+        <option value="Human" ${getEl(`race-${id}`).innerText === 'Human' ? 'selected' : ''}>Human</option>
+        <option value="Elf" ${getEl(`race-${id}`).innerText === 'Elf' ? 'selected' : ''}>Elf</option>
+        <option value="Orc" ${getEl(`race-${id}`).innerText === 'Orc' ? 'selected' : ''}>Orc</option>
+        <option value="Dwarf" ${getEl(`race-${id}`).innerText === 'Dwarf' ? 'selected' : ''}>Dwarf</option>
+      </select>`;
 
     getEl(`class-${id}`).innerHTML = `
-        <select id="edit-class-${id}">
-            <option ${getEl(`class-${id}`).innerText === 'Warrior' ? 'selected' : ''}>Warrior</option>
-            <option ${getEl(`class-${id}`).innerText === 'Mage' ? 'selected' : ''}>Mage</option>
-            <option ${getEl(`class-${id}`).innerText === 'Archer' ? 'selected' : ''}>Archer</option>
-            <option ${getEl(`class-${id}`).innerText === 'Paladin' ? 'selected' : ''}>Paladin</option>
-        </select>`;
+      <select id="edit-class-${id}">
+        <option value="Warrior" ${getEl(`class-${id}`).innerText === 'Warrior' ? 'selected' : ''}>Warrior</option>
+        <option value="Mage" ${getEl(`class-${id}`).innerText === 'Mage' ? 'selected' : ''}>Mage</option>
+        <option value="Archer" ${getEl(`class-${id}`).innerText === 'Archer' ? 'selected' : ''}>Archer</option>
+        <option value="Paladin" ${getEl(`class-${id}`).innerText === 'Paladin' ? 'selected' : ''}>Paladin</option>
+      </select>`;
 
     getEl(`faction-${id}`).innerHTML = `
-        <select id="edit-faction-${id}">
-            <option ${getEl(`faction-${id}`).innerText === 'Alliance' ? 'selected' : ''}>Alliance</option>
-            <option ${getEl(`faction-${id}`).innerText === 'Horde' ? 'selected' : ''}>Horde</option>
-            <option ${getEl(`faction-${id}`).innerText === 'Neutral' ? 'selected' : ''}>Neutral</option>
-        </select>`;
+      <select id="edit-faction-${id}">
+        <option value="Alliance" ${getEl(`faction-${id}`).innerText === 'Alliance' ? 'selected' : ''}>Alliance</option>
+        <option value="Horde" ${getEl(`faction-${id}`).innerText === 'Horde' ? 'selected' : ''}>Horde</option>
+        <option value="Neutral" ${getEl(`faction-${id}`).innerText === 'Neutral' ? 'selected' : ''}>Neutral</option>
+      </select>`;
 
     getEl(`save-${id}`).hidden = false;
     getEl(`cancel-${id}`).hidden = false;
-}
+  }
 
-/////////////////////////////////////////////////
-// SAVE
-/////////////////////////////////////////////////
-
-async function saveUser(id) {
-
-    const response = await fetch(`${API_BASE}/${id}`, {
+  // SAVE
+  async function saveUser(id) {
+    try {
+      const response = await fetch(`${API_BASE}/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            name: getEl(`edit-name-${id}`).value,
-            age: getEl(`edit-age-${id}`).value,
-            gender: getEl(`edit-gender-${id}`).value,
-            race: getEl(`edit-race-${id}`).value,
-            class: getEl(`edit-class-${id}`).value,
-            faction: getEl(`edit-faction-${id}`).value
+          name: getEl(`edit-name-${id}`).value,
+          age: getEl(`edit-age-${id}`).value,
+          gender: getEl(`edit-gender-${id}`).value,
+          race: getEl(`edit-race-${id}`).value,
+          class: getEl(`edit-class-${id}`).value,
+          faction: getEl(`edit-faction-${id}`).value
         })
-    });
+      });
+      if (!response.ok) throw new Error("Update failed: " + response.status);
+      const user = await response.json();
+      getEl(`name-${id}`).innerHTML = user.name;
+      getEl(`age-${id}`).innerHTML = user.age;
+      getEl(`gender-${id}`).innerHTML = user.gender;
+      getEl(`race-${id}`).innerHTML = user.race;
+      getEl(`class-${id}`).innerHTML = user.class;
+      getEl(`faction-${id}`).innerHTML = user.faction;
+      getEl(`save-${id}`).hidden = true;
+      getEl(`cancel-${id}`).hidden = true;
+      alert("User updated!");
+    } catch (err) {
+      console.error(err);
+      alert("Update error — check console");
+    }
+  }
 
-    const user = await response.json();
-
-    getEl(`name-${id}`).innerHTML = user.name;
-    getEl(`age-${id}`).innerHTML = user.age;
-    getEl(`gender-${id}`).innerHTML = user.gender;
-    getEl(`race-${id}`).innerHTML = user.race;
-    getEl(`class-${id}`).innerHTML = user.class;
-    getEl(`faction-${id}`).innerHTML = user.faction;
-
-    getEl(`save-${id}`).hidden = true;
-    getEl(`cancel-${id}`).hidden = true;
-
-    alert("User updated!");
-}
-
-/////////////////////////////////////////////////
-// CANCEL
-/////////////////////////////////////////////////
-
-function cancelEdit(id) {
+  function cancelEdit(id) {
     loadUsers();
-}
+  }
 
-/////////////////////////////////////////////////
-// DELETE
-/////////////////////////////////////////////////
-
-async function deleteUser(id) {
-
+  // DELETE
+  async function deleteUser(id) {
     if (!confirm("Are you sure?")) return;
+    try {
+      const res = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Delete failed: " + res.status);
+      getEl(`row-${id}`).remove();
+      alert("User deleted!");
+    } catch (err) {
+      console.error(err);
+      alert("Delete error — check console");
+    }
+  }
 
-    await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
-
-    getEl(`row-${id}`).remove();
-    alert("User deleted!");
-}
-
-/////////////////////////////////////////////////
-
-loadUsers();
-
+  // initial load
+  loadUsers();
 </script>
 
 </body>
