@@ -75,7 +75,7 @@ const getEl = id => document.getElementById(id);
 getEl("form").onsubmit = async e => {
     e.preventDefault();
 
-    await fetch(`${API_BASE}/users`, {
+    await fetch(`${API_BASE}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -132,38 +132,33 @@ function editUser(id) {
     getEl(`age-${id}`).innerHTML =
         `<input type="number" id="edit-age-${id}" value="${getEl(`age-${id}`).innerText}">`;
 
-    const currentGender = getEl(`gender-${id}`).innerText;
-    const currentRace = getEl(`race-${id}`).innerText;
-    const currentClass = getEl(`class-${id}`).innerText;
-    const currentFaction = getEl(`faction-${id}`).innerText;
-
     getEl(`gender-${id}`).innerHTML = `
         <select id="edit-gender-${id}">
-            <option value="Male" ${currentGender === "Male" ? "selected" : ""}>Male</option>
-            <option value="Female" ${currentGender === "Female" ? "selected" : ""}>Female</option>
+            <option ${getEl(`gender-${id}`).innerText === 'Male' ? 'selected' : ''}>Male</option>
+            <option ${getEl(`gender-${id}`).innerText === 'Female' ? 'selected' : ''}>Female</option>
         </select>`;
 
     getEl(`race-${id}`).innerHTML = `
         <select id="edit-race-${id}">
-            <option ${currentRace === "Human" ? "selected" : ""}>Human</option>
-            <option ${currentRace === "Elf" ? "selected" : ""}>Elf</option>
-            <option ${currentRace === "Orc" ? "selected" : ""}>Orc</option>
-            <option ${currentRace === "Dwarf" ? "selected" : ""}>Dwarf</option>
+            <option ${getEl(`race-${id}`).innerText === 'Human' ? 'selected' : ''}>Human</option>
+            <option ${getEl(`race-${id}`).innerText === 'Elf' ? 'selected' : ''}>Elf</option>
+            <option ${getEl(`race-${id}`).innerText === 'Orc' ? 'selected' : ''}>Orc</option>
+            <option ${getEl(`race-${id}`).innerText === 'Dwarf' ? 'selected' : ''}>Dwarf</option>
         </select>`;
 
     getEl(`class-${id}`).innerHTML = `
         <select id="edit-class-${id}">
-            <option ${currentClass === "Warrior" ? "selected" : ""}>Warrior</option>
-            <option ${currentClass === "Mage" ? "selected" : ""}>Mage</option>
-            <option ${currentClass === "Archer" ? "selected" : ""}>Archer</option>
-            <option ${currentClass === "Paladin" ? "selected" : ""}>Paladin</option>
+            <option ${getEl(`class-${id}`).innerText === 'Warrior' ? 'selected' : ''}>Warrior</option>
+            <option ${getEl(`class-${id}`).innerText === 'Mage' ? 'selected' : ''}>Mage</option>
+            <option ${getEl(`class-${id}`).innerText === 'Archer' ? 'selected' : ''}>Archer</option>
+            <option ${getEl(`class-${id}`).innerText === 'Paladin' ? 'selected' : ''}>Paladin</option>
         </select>`;
 
     getEl(`faction-${id}`).innerHTML = `
         <select id="edit-faction-${id}">
-            <option ${currentFaction === "Alliance" ? "selected" : ""}>Alliance</option>
-            <option ${currentFaction === "Horde" ? "selected" : ""}>Horde</option>
-            <option ${currentFaction === "Neutral" ? "selected" : ""}>Neutral</option>
+            <option ${getEl(`faction-${id}`).innerText === 'Alliance' ? 'selected' : ''}>Alliance</option>
+            <option ${getEl(`faction-${id}`).innerText === 'Horde' ? 'selected' : ''}>Horde</option>
+            <option ${getEl(`faction-${id}`).innerText === 'Neutral' ? 'selected' : ''}>Neutral</option>
         </select>`;
 
     getEl(`save-${id}`).hidden = false;

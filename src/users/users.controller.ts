@@ -44,5 +44,7 @@ findOne(@Param('id') id: string): Promise<Users> {
     @Delete(':id')
     delete(@Param('id') id: string): Promise<{ message: string }> {
         return this.userservice.delete(+id);
+   
+        
     }
 }
