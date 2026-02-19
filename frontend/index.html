@@ -98,28 +98,43 @@ getEl("form").onsubmit = async e => {
 /////////////////////////////////////////////////
 
 async function loadUsers() {
-    const response = await fetch(`${API_BASE}/display`);
-    const users = await response.json();
+    try {
+        const response = await fetch(`${API_BASE}/display`);
+        
+        if (!response.ok) {
+            console.error("API Error:", response.status);
+            return;
+        }
+        
+        const users = await response.json();
+        console.log("Users loaded:", users);
+        
+        if (!users || users.length === 0) {
+            getEl("tableBody").innerHTML = "<tr><td colspan='8'>No data found</td></tr>";
+            return;
+        }
 
-    getEl("tableBody").innerHTML = users.map(user => `
-        <tr id="row-${user.id}">
-            <td>${user.id}</td>
-            <td id="name-${user.id}">${user.name}</td>
-            <td id="age-${user.id}">${user.age}</td>
-            <td id="gender-${user.id}">${user.gender}</td>
-            <td id="race-${user.id}">${user.race}</td>
-            <td id="class-${user.id}">${user.class}</td>
-            <td id="faction-${user.id}">${user.faction}</td>
-            <td>
-                <button onclick="editUser(${user.id})">Edit</button>
-                <button onclick="saveUser(${user.id})" id="save-${user.id}" hidden>Save</button>
-                <button onclick="cancelEdit(${user.id})" id="cancel-${user.id}" hidden>Cancel</button>
-                <button onclick="deleteUser(${user.id})" style="color:red;">Delete</button>
-            </td>
-        </tr>
-    `).join("");
+        getEl("tableBody").innerHTML = users.map(user => `
+            <tr id="row-${user.id}">
+                <td>${user.id}</td>
+                <td id="name-${user.id}">${user.name}</td>
+                <td id="age-${user.id}">${user.age}</td>
+                <td id="gender-${user.id}">${user.gender}</td>
+                <td id="race-${user.id}">${user.race}</td>
+                <td id="class-${user.id}">${user.class}</td>
+                <td id="faction-${user.id}">${user.faction}</td>
+                <td>
+                    <button onclick="editUser(${user.id})">Edit</button>
+                    <button onclick="saveUser(${user.id})" id="save-${user.id}" hidden>Save</button>
+                    <button onclick="cancelEdit(${user.id})" id="cancel-${user.id}" hidden>Cancel</button>
+                    <button onclick="deleteUser(${user.id})" style="color:red;">Delete</button>
+                </td>
+            </tr>
+        `).join("");
+    } catch (error) {
+        console.error("Error loading users:", error);
+    }
 }
-
 /////////////////////////////////////////////////
 // EDIT
 /////////////////////////////////////////////////
