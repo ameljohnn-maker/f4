@@ -99,7 +99,7 @@ getEl("form").onsubmit = async e => {
 
 async function loadUsers() {
     try {
-        const response = await fetch(`${API_BASE}/display`);
+        const response = await fetch(`${API_BASE}`);
         
         if (!response.ok) {
             console.error("API Error:", response.status);
